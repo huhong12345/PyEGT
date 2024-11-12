@@ -37,19 +37,19 @@ print(f"Number of nodes: {num_nodes}")
 print(f"Number of edges: {num_edges}")
 print(f"Is directed: {is_directed}")
 
-# 博弈类型
-   # 自定义收益矩阵（4x4）
-custom_payoff_matrix = [
-        [(3, 3), (0, 5), (1, 2), (2, 1)],
-        [(5, 0), (1, 1), (2, 3), (0, 4)],
-        [(2, 1), (3, 2), (4, 4), (1, 0)],
-        [(1, 2), (4, 0), (0, 3), (2, 2)]
-    ]
-
-g = game.CustomGame(payoff_matrix=custom_payoff_matrix).bind(p)
-
-    # 进行博弈
-g.play()
+# # 博弈类型
+#    # 自定义收益矩阵（4x4）
+# custom_payoff_matrix = [
+#         [(3, 3), (0, 5), (1, 2), (2, 1)],
+#         [(5, 0), (1, 1), (2, 3), (0, 4)],
+#         [(2, 1), (3, 2), (4, 4), (1, 0)],
+#         [(1, 2), (4, 0), (0, 3), (2, 2)]
+#     ]
+#
+# g = game.CustomGame(payoff_matrix=custom_payoff_matrix).bind(p)
+#
+#     # 进行博弈
+# g.play()
 
 
 #g = game.PDG(b=5)
