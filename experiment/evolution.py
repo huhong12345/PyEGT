@@ -120,7 +120,7 @@ class Evolution(object):
 
         # fig, axes = plt.subplots(2, 5, subplot_kw={'xticks': [], 'yticks': []})
         # j = 0
-        for i in xrange(turns):
+        for i in range(turns):
             self.gen += 1
             if self.gen % period == 0:
                 delta = self.cooperate[-1]-self.cooperate[-2]

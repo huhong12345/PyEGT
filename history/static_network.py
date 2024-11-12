@@ -25,7 +25,7 @@ network = nx.random_regular_graph(C, N)
 s = np.random.randint(2, size=N)
 
 # 演化记录
-# r_s = np.zeros((1,K), dtype=np.int)
+# r_s = np.zeros((1,K), dtype=int)
 r_s = [0] * K
 
 # pdg收益矩阵
@@ -70,6 +70,9 @@ def pgg(G, s, fitness, anchor=None):
         fitness.fill(0)
         # 第一种每个group投入1
         degrees = np.array(G.degree().values())
+        # degreesXX = G.degree()  # 返回一个 DegreeView 对象
+        # degrees = [deg for _, deg in degreesXX]  # 获取度数
+        #degrees = np.array(list(G.degree().values()))
         for node in G.nodes_iter():
             degree = degrees[node]
             fitness[node] += (s[node] - 1) * (degree+1)
@@ -137,7 +140,7 @@ def DB(G, fitness):
 fitness = np.empty(N, dtype=np.double)
 # fitness = [0] * N
 death = None
-for i in xrange(K):
+for i in range(K):
     # 根据网络结构进行博弈
     # pdg(network, s, fitness, death)
     pgg(network, s, fitness, death)

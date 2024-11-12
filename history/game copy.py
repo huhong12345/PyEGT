@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
+# -*- Author: shaodan(shaodan.cn@gmail.com) -*-
+# -*-  2015.07.11 -*-
+
 import numpy as np
+
+
 class Game(object):
     """ base class of game"""
-    def __init__(self, order=4):
+    def __init__(self, order=2):
         # order=2 Two strategies: 0-Cooperate, 1-Betray
         # todo: multi-strategies game
         self.order = order
@@ -47,100 +53,6 @@ class Game(object):
         self.entire_play()
         return (fit_fast-self.population.fitness).sum()
 
-
-class CustomGame(Game):
-    """ Custom Game with a user-defined 4x4 payoff matrix """
-
-    def __init__(self, payoff_matrix=None):
-        super(CustomGame, self).__init__()
-        # 如果没有提供收益矩阵，则使用默认的4x4收益矩阵
-        if payoff_matrix is not None:
-            self.payoff = np.array(payoff_matrix, dtype=np.double)
-        else:
-            # 默认的收益矩阵（可以根据需要修改）
-            self.payoff = np.array([[(3, 3), (0, 5), (1, 2), (2, 1)],
-                                    [(5, 0), (1, 1), (2, 3), (0, 4)],
-                                    [(2, 1), (3, 2), (4, 4), (1, 0)],
-                                    [(1, 2), (4, 0), (0, 3), (2, 2)]],
-                                   dtype=np.double)
-
-    def entire_play(self):
-        fitness = self.population.fitness
-        strategy = self.population.strategy
-        fitness.fill(0)
-        for a, b in self.population.edges:
-            p = self.payoff[strategy[a]][strategy[b]]
-            fitness[a] += p[0]
-            fitness[b] += p[1]
-
-    def fast_play(self, node, rewire=None):
-        strategy = self.population.strategy
-        fitness = self.population.fitness
-        if node < 0:
-            return
-        f = 0  # 新节点收益重新计算
-        s = strategy[node]
-        for neigh in self.population.neighbors(node):
-            p = self.payoff[s][strategy[neigh]]
-            f += p[0]           # 新节点累加
-            fitness[neigh] += p[1]  # 邻居节点计算新的收益
-        fitness[node] = f
-
-    def fast_play2(self, node, rewire=None):
-        strategy = self.population.strategy
-        fitness = self.population.fitness
-        updated = True
-        if node < 0:
-            if rewire is None:
-                return
-            updated = False
-            node = rewire[0]
-
-        s = strategy[node]
-        rewired = False
-        if rewire is not None:
-            rewired = True
-            old, new = rewire[1:]
-            old_p = self.payoff[s][strategy[old]]
-            new_p = self.payoff[s][strategy[new]]
-            fitness[node] += new_p[0] - old_p[0]
-            fitness[old] -= old_p[1]
-            fitness[new] += new_p[1]
-            if not updated:
-                return
-
-        p = 0  # 新节点收益从0计算
-        for neigh in self.population.neighbors(node):
-            new_p = self.payoff[s][strategy[neigh]]
-            p += new_p[0]
-            if not rewired or neigh != new:
-                old_p = self.payoff[s][strategy[neigh]]
-                fitness[neigh] += new_p[1] - old_p[1]
-        fitness[node] = p
-
-    def rewire_play(self, rewire):
-        strategy = self.population.strategy
-        fitness = self.population.fitness
-        if rewire is None:
-            return
-        a, b, c = rewire
-        # 旧边
-        p_old = self.payoff[strategy[a]][strategy[b]]
-        fitness[a] -= p_old[0]
-        fitness[b] -= p_old[1]
-        # 新边
-        p_new = self.payoff[strategy[a]][strategy[c]]
-        fitness[a] += p_new[0]
-        fitness[c] += p_new[1]
-
-    def node_play(self, node, s=None):
-        strategy = self.population.strategy
-        if s is None:
-            s = strategy[node]
-        p = 0
-        for n in self.population.neighbors(node):
-            p += (self.payoff[s][strategy[n]])[0]
-        return p
 
 class PDG(Game):
     """ Prisoner's Dilemma Game"""
